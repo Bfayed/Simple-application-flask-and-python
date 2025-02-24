@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Essential meta tags for responsive design and character encoding -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download History</title>
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS linked from a static directory -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Inline CSS for specific styling -->
+    <style>
+        .back-to-index-btn {
+            margin-bottom: 20px; /* Adds space below the back button */
+        }
+
+        .pagination {
+            justify-content: center; /* Centers the pagination */
+            margin-top: 20px; /* Adds space above the pagination */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar setup -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">ContentIQ</a>
+        <!-- Hamburger menu for mobile views -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Navigation items, including conditional rendering for login/register or user dropdown -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if not session.loggedin %}
+                <!-- Show login and register options if the user is not logged in -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
+                {% else %}
+                <!-- User dropdown menu for logged-in users -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{ session.get('name', 'User') }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="/history">History</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main container for page content -->
+    <div class="container mt-4">
+        <!-- Button to return to the search page -->
+        <div class="back-to-index-btn">
+            <a href="/index" class="btn btn-primary" style="margin: 15px; background-color: #06325d;">Back to Search</a>
+        </div>
+        <!-- History table display -->
+        <div class="col">
+            <div class="history-table" style="color: white;">
+                <h1>Download History</h1>
+                <!-- Table structure for displaying history entries -->
+                <table class="table" style="color: white;">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Downloaded Content</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in history %}
+                        <tr>
+                            <td>{{ item.date }}</td>
+                            <td>{{ item.url }}</td>
+                            <td>
+                                <button class="btn btn-primary scrape-button" data-url="{{ item.url }}"
+                                    style="background-color: #06325d;">Scrape</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination for navigating through history entries -->
+        <div class="row" style="background-color: #06325d;">
+            <div class="col">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <!-- Dynamically generated pagination links -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap and custom scripts for functionality -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // JavaScript for handling scrape button actions
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.scrape-button').forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    scrapeData(this.getAttribute('data-url'));
+                });
+            });
+        });
+
+        function scrapeData(url) {
+            // Function to make a POST request for scraping data
+        }
+    </script>
+</body>
+</html>
